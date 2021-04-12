@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import { Paper, Typography, Grid } from '@material-ui/core';
+
+import parseIGC from '../../utils/parseIGC';
 import useStyles from './styles';
 
 const IGCViewer = () => {
   const classes = useStyles();
   const texts = Array(10).fill("abc");
+  const dataUrl = "https://xcportal.pl/sites/default/files/tracks/2021-04-12/2021-04-12-xlk-prm-012067573974.igc";
+  useEffect(() => {
+    parseIGC(dataUrl);
+  }, [])
+
   return (
     <Grid
     component="main"
