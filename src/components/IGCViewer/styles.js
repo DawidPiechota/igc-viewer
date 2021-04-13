@@ -10,10 +10,13 @@ export default makeStyles({
     padding: "20px",
     margin: "20px"
   },
-  container: {
+  mapContainer: {
     position: "relative",
     overflow: "hidden",
     width: "100%",
     paddingTop: "75%",
-  }
+  },
+  buttonVisualize: {
+    marginTop: "10px",
+  },
 });

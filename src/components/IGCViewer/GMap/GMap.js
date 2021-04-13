@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react'
-import { GoogleMap, useJsApiLoader, Polyline } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Polyline, Marker } from '@react-google-maps/api';
+
+import iconPara from "../../../icons/para.svg";
+import iconStart from "../../../icons/start.svg";
+import iconFinish from "../../../icons/finish.svg";
 
 const containerStyle = {
   position: "absolute",
@@ -11,24 +15,10 @@ const containerStyle = {
   height: "100%",
 };
 
-const center = {
-  lat: 52,
-  lng: 19.6
-};
-
-const path = [
-  {lat: 37.772, lng: -122.214},
-  {lat: 21.291, lng: -157.821},
-  {lat: -18.142, lng: 178.431},
-  {lat: -27.467, lng: 153.027}
-];
-
 const options = {
-  strokeColor: '#FF0000',
+  strokeColor: "rgba(27, 100, 170, 0.856)",
   strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillColor: '#FF0000',
-  fillOpacity: 0.35,
+  strokeWeight: 3,
   clickable: false,
   draggable: false,
   editable: false,
@@ -37,14 +27,20 @@ const options = {
   zIndex: 1
 };
 
-function GMap({pathPoints}) {
+function GMap({
+  pathPoints,
+  mapCenter,
+  iconPosition,
+  ongoingVisualization,
+  flightStartEndPos
+}) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: ""
+    googleMapsApiKey: "AIzaSyBOkgAJGSMEpDzaqpzfO4e_oSMBXKhtC-Q"
   })
 
   const [map, setMap] = React.useState(null)
-
+  
   const onLoad = React.useCallback(function callback(map) {
     //const bounds = new window.google.maps.LatLngBounds();
     //map.fitBounds(bounds);
@@ -55,23 +51,30 @@ function GMap({pathPoints}) {
     setMap(null)
   }, [])
 
-  useEffect(() => {
-    if(map) {
-      map.setCenter({lat: pathPoints[0]?.lat, lng: pathPoints[0]?.lng});
-    }
-  },[pathPoints])
-
   return isLoaded ? (
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={center}
-        zoom={6}
+        center={mapCenter}
+        zoom={10}
         onLoad={onLoad}
         onUnmount={onUnmount}
       >
         <Polyline
           path={pathPoints}
           options={options}
+        />
+        <Marker
+          position={iconPosition}
+          visible={ongoingVisualization}
+          icon={iconPara}
+        />
+        <Marker
+          position={flightStartEndPos?.start}
+          icon={iconStart}
+        />
+        <Marker
+          position={flightStartEndPos?.end}
+          icon={iconFinish}
         />
         <></>
       </GoogleMap>
