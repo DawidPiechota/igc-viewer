@@ -2,48 +2,67 @@ import axios from 'axios';
 
 const parseIGC = async (url) => {
   let flightData = {
-    manufacturerCode: null, // A
-    fixAccuracy: null, // HFFXA
-    dateOfFlight: null, // HFDTE (UTC)
-    pilot: null, // HFPLT
-    copilot: null, // HFCM2
-    gliderType: null, // HFGTY
-    gliderId: null, // HFGID
-    tailFinNumber: null, // HFCID
-    gliderClass: null, // HFCCL
-    flightRecordedType: null, // HFFTY
+    info: {
+      manufacturerCode: { value: null, name: "Manufacturer Code" }, // A
+      fixAccuracy: { value: null, name: "Fix Accuracy" }, // HFFXA
+      dateOfFlight: { value: null, name: "Date Of Flight" }, // HFDTE (UTC)
+      pilot: { value: null, name: "Pilot" }, // HFPLT
+      copilot: { value: null, name: "Copilot" }, // HFCM2
+      gliderType: { value: null, name: "Glider Type" }, // HFGTY
+      gliderId: { value: null, name: "Glider ID" }, // HFGID
+      tailFinNumber: { value: null, name: "Tail Fin Number" }, // HFCID
+      gliderClass: { value: null, name: "Glider Class" }, // HFCCL
+      flightRecordedType: { value: null, name: "Flight Recorder" }, // HFFTY
+      flightStart: { value: null, name: "Start of flight" }, // HFFTY
+      flightEnd: { value: null, name: "End of flight" }, // HFFTY
+    },
     logPoints: [], // B
   };
-
+  const parseDateTime = (data, char) => {
+    return data.substring(0,2) +
+    char +
+    data.substring(2,4) +
+    char +
+    data.substring(4,6);
+  }
   const decipherLine = line => {
     if(line[0] === 'B') {
+      const timeStamp = parseDateTime(line.substring(1,7), ":");
+
+      const lat = +line.substring(7,9) +
+        (line.substring(9,11) + '.' + line.substring(11,14)) / 60 *
+        (line[14] === 'N' ? 1 : -1);
+
+      const lng = +line.substring(15,18) +
+        (line.substring(18,20) + '.' + line.substring(20,23)) / 60 *
+        (line[23] === 'E' ? 1 : -1);
+
       flightData.logPoints.push({
-        timeStamp: line.substring(1,7),
-        lat: line.substring(7,15),
-        lng: line.substring(15,24),
+        timeStamp,
+        lat,
+        lng,
       });
       return;
     }
     if(line[0] === 'A') {
-      flightData.manufacturerCode = line.substring(1);
+      flightData.info.manufacturerCode.value = line.substring(1);
       return;
     }
 
     const IGCCode = line.substring(0,5);
-    const payload = line.substring(5)
+    const payload = line.substring(5).split(":")
     switch (IGCCode) {
-      case 'HFFXA': flightData.fixAccuracy = payload; break;
-      case 'HFDTE': flightData.dateOfFlight = payload; break;
-      case 'HFPLT': flightData.pilot = payload; break;
-      case 'HFCM2': flightData.copilot = payload; break;
-      case 'HFGTY': flightData.gliderType = payload; break;
-      case 'HFGID': flightData.gliderId = payload; break;
-      case 'HFCID': flightData.tailFinNumber = payload; break;
-      case 'HFCCL': flightData.gliderClass = payload; break;
-      case 'HFFTY': flightData.flightRecordedType = payload; break;
+      case 'HFFXA': flightData.info.fixAccuracy.value = payload[1]; break;
+      case 'HFDTE': flightData.info.dateOfFlight.value = parseDateTime(payload[0], '.'); break;
+      case 'HFPLT': flightData.info.pilot.value = payload[1]; break;
+      case 'HFCM2': flightData.info.copilot.value = payload[1]; break;
+      case 'HFGTY': flightData.info.gliderType.value = payload[1]; break;
+      case 'HFGID': flightData.info.gliderId.value = payload[1]; break;
+      case 'HFCID': flightData.info.tailFinNumber.value = payload[1]; break;
+      case 'HFCCL': flightData.info.gliderClass.value = payload[1]; break;
+      case 'HFFTY': flightData.info.flightRecordedType.value = payload[1]; break;
       default: console.log(line); break;
     }
-
   };
 
   try {
@@ -53,7 +72,11 @@ const parseIGC = async (url) => {
     console.error(error);
     return;
   }
+
+  flightData.info.flightStart.value = flightData.logPoints[0].timeStamp;
+  flightData.info.flightEnd.value = flightData.logPoints[flightData.logPoints.length-1].timeStamp;
   console.log(flightData);
+  return flightData;
 }
 
 export default parseIGC;
