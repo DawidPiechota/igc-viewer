@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Paper, Typography, Grid } from '@material-ui/core';
 
 import parseIGC from '../../utils/parseIGC';
+import GMap from './GMap/GMap';
 import useStyles from './styles';
 
 const IGCViewer = () => {
@@ -44,27 +45,27 @@ const IGCViewer = () => {
           justify="space-around"
           alignItems="center"
           >
-          <Grid item xs={12} lg={6}>
-            {flightData?.info &&
-              infoOrder.map( field => (
-                <Typography variant ="h5">{`${flightData.info[field].name}: ${flightData.info[field].value}`}</Typography>
-              ))
-            }
-          </Grid>
-          <Grid item xs={12} lg={6}>
-            <Paper className={classes.paper}>
-              {flightData?.info &&
-                infoOrder.map( field => (
-                  <Typography variant ="h6">{`${flightData.info[field].name}: ${flightData.info[field].value}`}</Typography>
-                ))
-              }
-          </Paper>
-          </Grid>
+            <Grid item xs={12} lg={6}>
+              <Paper className={classes.paper}>
+                {flightData?.info &&
+                  infoOrder.map( field => (
+                    <Typography variant ="h6">{`${flightData.info[field].name}: ${flightData.info[field].value}`}</Typography>
+                  ))
+                }
+              </Paper>
+            </Grid>
+            <Grid item xs={12} lg={6}>
+              <Paper className={classes.paper}>
+                <div className={classes.container}>
+                  <GMap pathPoints={flightData?.logPoints}/>
+                </div>
+              </Paper>
+            </Grid>
           </Grid> 
         </Paper>
       </Grid>   
     </Grid> 
-   );
+  );
 }
  
 export default IGCViewer;
