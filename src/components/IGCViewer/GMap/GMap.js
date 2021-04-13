@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { GoogleMap, useJsApiLoader, Polyline, Marker } from '@react-google-maps/api';
 
 import iconPara from "../../../icons/para.svg";
@@ -18,7 +18,7 @@ const containerStyle = {
 const options = {
   strokeColor: "rgba(27, 100, 170, 0.856)",
   strokeOpacity: 0.8,
-  strokeWeight: 3,
+  strokeWeight: 2,
   clickable: false,
   draggable: false,
   editable: false,
@@ -42,8 +42,6 @@ function GMap({
   const [map, setMap] = React.useState(null)
   
   const onLoad = React.useCallback(function callback(map) {
-    //const bounds = new window.google.maps.LatLngBounds();
-    //map.fitBounds(bounds);
     setMap(map);
   }, [])
 

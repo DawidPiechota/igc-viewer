@@ -19,4 +19,7 @@ export default makeStyles({
   buttonVisualize: {
     marginTop: "10px",
   },
+  buttonGetData: {
+    margin: "20px"
+  }
 });
