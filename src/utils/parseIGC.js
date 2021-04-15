@@ -61,6 +61,7 @@ const parseIGC = async (url) => {
       case 'HFCID': flightData.info.tailFinNumber.value = payload[1]; break;
       case 'HFCCL': flightData.info.gliderClass.value = payload[1]; break;
       case 'HFFTY': flightData.info.flightRecordedType.value = payload[1]; break;
+      default: // skip lines that are not relevant
     }
   };
 
