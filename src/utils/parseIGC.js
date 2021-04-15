@@ -69,8 +69,7 @@ const parseIGC = async (url) => {
     const response = await axios.get(url);
     response.data.split("\n").forEach(decipherLine);
   } catch (error) {
-    console.error(error);
-    return;
+    return false;
   }
 
   flightData.info.flightStart.value = flightData.logPoints[0].timeStamp;
