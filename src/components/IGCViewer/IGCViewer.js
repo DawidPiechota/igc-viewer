@@ -1,5 +1,16 @@
 import { useEffect, useState, useRef } from "react";
-import { Paper, Typography, Grid, Button, TextField, Checkbox, FormControl, FormControlLabel } from '@material-ui/core';
+import {
+  Paper,
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Snackbar,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab'
 
 import parseIGC from '../../utils/parseIGC';
 import GMap from './GMap/GMap';
@@ -14,6 +25,7 @@ const IGCViewer = () => {
   const [iconPosition, setIconPosition] = useState(null);
   const [flightStartEndPos, setFlightStartEndPos] = useState();
   const [dataUrl, setDataUrl] = useState("https://xcportal.pl/sites/default/files/tracks/2021-04-12/2021-04-12-xlk-prm-012067573974.igc");
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const [iconChecked, setIconChecked] = useState(true);
   const timeoutID = useRef(null);
   const infoOrder = [
@@ -35,6 +47,10 @@ const IGCViewer = () => {
     clearTimeout(timeoutID.current);
     setOngoingVisualization(false);
     parseIGC(dataUrl).then( data => {
+      if(!data){
+        setOpenSnackBar(true);
+        return;
+      }
       setFlightData(data);
       setMapPoints(data.logPoints);
       setMapCenter(data.logPoints[0]);
@@ -83,7 +99,12 @@ const IGCViewer = () => {
     setIconChecked(e.target.checked);
   }
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackBar(false);
+  }
+
   return (
+    <>
     <Grid
     component="main"
     container
@@ -171,6 +192,12 @@ const IGCViewer = () => {
         </Paper>
       </Grid>
     </Grid>
+      <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="warning">
+          Please input correct url to data in IGC format
+        </Alert>
+    </Snackbar>
+  </>
   );
 }
  
