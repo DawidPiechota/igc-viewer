@@ -4,7 +4,6 @@ export default makeStyles({
   paper: {
     padding: "20px",
     margin: "20px",
-    heigth: "90vh"
   },
   infoBox: {
     padding: "20px",
@@ -16,10 +15,11 @@ export default makeStyles({
     width: "100%",
     paddingTop: "75%",
   },
-  buttonVisualize: {
-    marginTop: "10px",
+  button: {
+    margin: "20px",
   },
-  buttonGetData: {
-    margin: "20px"
+  mapOptions: {
+    padding: "20px",
+    margin: "20px",
   }
 });

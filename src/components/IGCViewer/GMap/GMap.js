@@ -32,21 +32,22 @@ function GMap({
   mapCenter,
   iconPosition,
   ongoingVisualization,
-  flightStartEndPos
+  flightStartEndPos,
+  iconChecked
 }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBOkgAJGSMEpDzaqpzfO4e_oSMBXKhtC-Q"
+    googleMapsApiKey: ""
   })
 
-  const [map, setMap] = React.useState(null)
-  
+  // const [map, setMap] = React.useState(null)
   const onLoad = React.useCallback(function callback(map) {
-    setMap(map);
+    // if i ever need map handle
+    // setMap(map);
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
+    // setMap(null)
   }, [])
 
   return isLoaded ? (
@@ -63,16 +64,18 @@ function GMap({
         />
         <Marker
           position={iconPosition}
-          visible={ongoingVisualization}
+          visible={ongoingVisualization && iconChecked}
           icon={iconPara}
         />
         <Marker
           position={flightStartEndPos?.start}
           icon={iconStart}
+          visible={iconChecked}
         />
         <Marker
           position={flightStartEndPos?.end}
           icon={iconFinish}
+          visible={iconChecked}
         />
         <></>
       </GoogleMap>

@@ -61,7 +61,6 @@ const parseIGC = async (url) => {
       case 'HFCID': flightData.info.tailFinNumber.value = payload[1]; break;
       case 'HFCCL': flightData.info.gliderClass.value = payload[1]; break;
       case 'HFFTY': flightData.info.flightRecordedType.value = payload[1]; break;
-      default: console.log(line); break;
     }
   };
 
@@ -75,7 +74,6 @@ const parseIGC = async (url) => {
 
   flightData.info.flightStart.value = flightData.logPoints[0].timeStamp;
   flightData.info.flightEnd.value = flightData.logPoints[flightData.logPoints.length-1].timeStamp;
-  console.log(flightData);
   return flightData;
 }
 
